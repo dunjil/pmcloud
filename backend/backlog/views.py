@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from backlog.models import Jobhdr, Orgtbl, Jobtas
 import datetime
 from django.db.models import Q, OuterRef, Subquery
@@ -10,6 +10,35 @@ import pandas as pd
 import json
 
 
+
+pcm_closed=pd.DataFrame()
+
+pcn_b_closed=pd.DataFrame()
+
+pcn_c_closed=pd.DataFrame()
+ptm_d_closed=pd.DataFrame()
+ptm_e_closed=pd.DataFrame()
+pmf_closed=pd.DataFrame()
+pmi_closed=pd.DataFrame()
+pms_closed=pd.DataFrame()
+pmn_closed=pd.DataFrame()
+pmw_closed=pd.DataFrame()
+
+# Outstanding
+outstanding=pd.DataFrame()
+pcm_outstanding=pd.DataFrame()
+pcn_b_outstanding=pd.DataFrame()
+pcn_c_outstanding=pd.DataFrame()
+ptm_d_outstanding=pd.DataFrame()
+ptm_e_outstanding=pd.DataFrame()
+pmf_outstanding=pd.DataFrame()
+pmi_outstanding=pd.DataFrame()
+pms_outstanding=pd.DataFrame()
+pmn_outstanding=pd.DataFrame()
+pmw_outstanding=pd.DataFrame()
+
+
+#from Josh
 # elect_util=	1406.8
 # inst_util=	1124.0
 # mech_util=	1662.5
@@ -39,7 +68,7 @@ import json
 # msc_scaff	=2466.6
 # wk_access	=1283.0
 
-# Data from 2020
+# Data from 2021
 elect_util=	41.7
 inst_util	=44.2
 mech_util=	47.1
@@ -102,6 +131,8 @@ org_data=pd.DataFrame(raw_data)
 # pmn_est=110
 # pmw_est=1170
 
+
+#2020 Data
 # pcm_est=189.5
 # pcn_b_est=93.4
 # pcn_c_est=141.2
@@ -124,24 +155,64 @@ pmi_est=151.9
 pms_est=303.5
 pmn_est=14.3
 pmw_est=849.8
-
-
 pw_est=2506.85
 
 def backlog(request):
-    # PCM
+        # Outstanding
+    global outstanding
+    global pcm_outstanding
+    global pcn_b_outstanding
+    global pcn_c_outstanding
+    global ptm_d_outstanding
+    global ptm_e_outstanding
+    global pmf_outstanding
+    global pmi_outstanding
+    global pms_outstanding
+    global pmn_outstanding
+    global pmw_outstanding
 
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
+
+    outstanding = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
     Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
     Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_UTIL', 'INST_UTIL', 'MECH_UTIL', 'SYQFG_UTIL']) &
+    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_UTIL','INST_UTIL','MECH_UTIL','SYQFG_UTIL','ELEC_SL','INST_SL','MECH_SL','SYQFG_SL','ELEC_LHU','INST_LHU','MECH_LHU','SYQFG_LHU','ELEC_T123','INST_T123','MECH_T123','SYQFG_T123',
+    'ELEC_T456','INST_T456','MECH_T456','SYQFG_T456','CIV_INSUL','CIV_PAINT','CIV_INFSTR','HVAC_IA','MSC_LIFT&R','MSC_LIGHT','MSC_SCAFF','WK_ACCESS','PMN_MECH','PMN_INST','PMN_ELEC',
+      'FABWKSHOP','ELECTSHOP','HDWKSHOP','INSTWKSHOP','ELECSMART','MECHWKSHOP','MC_WKSHOP','MACHINSHOP','OVHDCRANE','INST_SUPP']) &
     ~Q(next_step__in=["RM","JV"]) &
     Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
     ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
+    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values()))
+    data = outstanding
+
+     # Outstanding
+    pcm_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_UTIL', 'INST_UTIL', 'MECH_UTIL', 'SYQFG_UTIL'])]
+
+    pcn_b_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_SL', 'INST_SL', 'MECH_SL', 'SYQFG_SL'])]
+
+    pcn_c_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_LHU', 'INST_LHU', 'MECH_LHU', 'SYQFG_LHU'])]
+
+    ptm_d_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_T123', 'INST_T123', 'MECH_T123', 'SYQFG_T123'])]
+
+    ptm_e_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_T456', 'INST_T456', 'MECH_T456', 'SYQFG_T456'])]
+
+    pmf_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['CIV_INSUL', 'CIV_PAINT'])]
+
+    pmi_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['CIV_INFSTR'])]
+
+    pms_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['HVAC_IA', 'MSC_LIFT&R', 'MSC_LIGHT', 'MSC_SCAFF', 'WK_ACCESS'])]
+
+    pmn_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['PMN_CIVIL', 'PMN_ELEC', 'PMN_MECH', 'PMN_INST'])]
+
+    pmw_outstanding=outstanding.loc[outstanding['jobtas__ja_orgn_id__orgn_code'].isin(['ELECSMART'
+    'ELECTSHOP', 'FABWKSHOP', 'HDWKSHOP','INST_SUPP','INSTWKSHOP', 'MACHINSHOP', 'MC_WKSHOP', 'MECHWKSHOP', 'OVHDCRANE'])]
+    
+    
+    
+    # PCM
     #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = pcm_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median(),inplace=True)
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
     # Q1=data['total_labour'].quantile(0.25)
     # Q3=data['total_labour'].quantile(0.75)
@@ -157,17 +228,9 @@ def backlog(request):
     
 
     # PCN-B
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_SL', 'INST_SL', 'MECH_SL', 'SYQFG_SL']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = pcn_b_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pcn_b_blog=round(data['total_labour'].astype('float64').sum()/pcn_b_est,1)
@@ -180,17 +243,10 @@ def backlog(request):
     # PCN-C
 
 
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_LHU', 'INST_LHU', 'MECH_LHU', 'SYQFG_LHU']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
+    data = pcn_c_outstanding
     #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pcn_c_blog=round(data['total_labour'].astype('float64').sum()/pcn_c_est,1)
@@ -200,17 +256,9 @@ def backlog(request):
     
 
     # PTM-D
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_T123', 'INST_T123', 'MECH_T123', 'SYQFG_T123']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = ptm_d_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     ptm_d_blog=round(data['total_labour'].astype('float64').sum()/ptm_d_est,1)
@@ -219,17 +267,9 @@ def backlog(request):
 
 
     # PTM-E
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_T456', 'INST_T456', 'MECH_T456', 'SYQFG_T456']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = ptm_e_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     ptm_e_blog=round(data['total_labour'].astype('float64').sum()/ptm_e_est,1)
@@ -238,17 +278,11 @@ def backlog(request):
 
 
     # PMF
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['CIV_INSUL', 'CIV_PAINT']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = pmf_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
+
+   
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pmf_blog=round(data['total_labour'].astype('float64').sum()/pmf_est,1)
@@ -257,17 +291,9 @@ def backlog(request):
       
     
     # PMI
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['CIV_INFSTR']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = pmi_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pmi_blog=round(data['total_labour'].astype('float64').sum()/pmi_est,1)
@@ -275,18 +301,9 @@ def backlog(request):
     pmi=data['total_labour'].sum()
       
     # PMS
-    unit_est=pms_est
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['HVAC_IA', 'MSC_LIFT&R', 'MSC_LIGHT', 'MSC_SCAFF', 'WK_ACCESS']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data = pmi_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pms_blog=round(data['total_labour'].astype('float64').sum()/pms_est,1)
@@ -295,18 +312,9 @@ def backlog(request):
       
 
     # PMN
-    unit_est=pmn_est
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['PMN_CIVIL', 'PMN_ELEC', 'PMN_MECH', 'PMN_INST']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
+    data =pmn_outstanding
     data['jobtas__est_misc_amt'].fillna(data['jobtas__est_misc_amt'].median())
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pmn_blog=round(data['total_labour'].astype('float64').sum()/pmn_est,1)
@@ -314,17 +322,8 @@ def backlog(request):
     pmn=data['total_labour'].sum()
       
     # PMW
-    unit_est=pmw_est
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
-    Q(job_status__in=['A', 'AE', 'C', 'IP', 'JE', 'JR', 'JV', 'JW', 'C']) &
-    Q(jobtas__task_status__in=['A', 'ER', 'IP', 'JW', 'NE']) & 
-    Q(jobtas__ja_orgn_id__orgn_code__in=['PMN_CIVIL', 'PMN_ELEC', 'PMN_MECH', 'PMN_INST']) &
-    ~Q(next_step__in=["RM","JV"]) &
-    Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
-    ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__est_lab_amt','jobtas__est_misc_amt')))
-    #data['jobtas__est_misc_amt']=pd.to_numeric(data['jobtas__est_misc_amt'])
-    data['total_labour']=data['jobtas__est_misc_amt']+ data['jobtas__est_lab_amt']
+    data = pmw_outstanding
+    data['total_labour']=data['jobtas__est_misc_amt'].astype('float64')+ data['jobtas__est_lab_amt'].astype('float64')
     ##This is where I should remove the outliers before calculating the backlog in the next line
 
     pmw_blog=round(data['total_labour'].astype('float64').sum()/pmw_est,1)
@@ -335,7 +334,7 @@ def backlog(request):
 
 
     plant_wide = pcm  + pcn_b + pcn_c + ptm_d + ptm_e + pmf + pmi + pms + pmn + pmw
-    pw_count = pcm_count + pcn_b_count + pcn_c_count + ptm_d_count + ptm_e_count + pmf_count + pmi_count + pms_count + pmn_count + pmw_count
+    pw_count = len(outstanding)
     #pw_blog = round(plant_wide / 11873.98, 1)
     pw_blog = round(float(plant_wide) / pw_est, 1)
 
@@ -369,7 +368,7 @@ def backlog(request):
     }
 
     return render(request, 'index.html', context)
-def dept_backlog(request, dept):
+def cm_units(request, dept):
     unit=dept
     if unit =='pcm':
         data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
@@ -634,9 +633,13 @@ def dept_backlog(request, dept):
         return HttpResponse('<h1> Please Select a valid department </h1>')
     #print(ptm_e_data.query)
     
+
+
+    # Calculates Backlog In Weeks
 def weeksbacklog(request):
     today = datetime.datetime.today() - datetime.timedelta(days=365)
-    data = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
+
+    closed = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
     Q(job_status__in=['C', 'HF','EC']) &
     Q(jobtas__task_status__in=['C']) & 
     Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_UTIL','INST_UTIL','MECH_UTIL','SYQFG_UTIL','ELEC_SL','INST_SL','MECH_SL','SYQFG_SL','ELEC_LHU','INST_LHU','MECH_LHU','SYQFG_LHU','ELEC_T123','INST_T123','MECH_T123','SYQFG_T123',
@@ -646,6 +649,219 @@ def weeksbacklog(request):
     Q(next_step__in=["JO"]) &
     Q(jobtas__actual_end_date__gte=(today)) &
     ~Q(work_type__in=['OS', 'SD','MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__ja_orgn_id__orgn_code')))
-    print(data.columns)
-    print("No of completed jobs for the past one year :{}".format(len(data.index)))
-    return render(request, 'weeks.html')
+    
+    global pcm_closed
+    global outstanding
+
+    global pcn_b_closed
+
+    global pcn_c_closed
+    global ptm_d_closed
+    global ptm_e_closed
+    global pmf_closed
+    global pmi_closed
+    global pms_closed
+    global pmn_closed
+    global pmw_closed
+
+    
+
+    
+    pcm_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_UTIL', 'INST_UTIL', 'MECH_UTIL', 'SYQFG_UTIL'])]
+
+    pcn_b_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_SL', 'INST_SL', 'MECH_SL', 'SYQFG_SL'])]
+
+    pcn_c_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_LHU', 'INST_LHU', 'MECH_LHU', 'SYQFG_LHU'])]
+
+    ptm_d_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_T123', 'INST_T123', 'MECH_T123', 'SYQFG_T123'])]
+
+    ptm_e_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELEC_T456', 'INST_T456', 'MECH_T456', 'SYQFG_T456'])]
+
+    pmf_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['CIV_INSUL', 'CIV_PAINT'])]
+
+    pmi_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['CIV_INFSTR'])]
+
+    pms_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['HVAC_IA', 'MSC_LIFT&R', 'MSC_LIGHT', 'MSC_SCAFF', 'WK_ACCESS'])]
+
+    pmn_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['PMN_CIVIL', 'PMN_ELEC', 'PMN_MECH', 'PMN_INST'])]
+
+    pmw_closed=closed.loc[closed['jobtas__ja_orgn_id__orgn_code'].isin(['ELECSMART'
+    'ELECTSHOP', 'FABWKSHOP', 'HDWKSHOP','INST_SUPP','INSTWKSHOP', 'MACHINSHOP', 'MC_WKSHOP', 'MECHWKSHOP', 'OVHDCRANE'])]
+
+   
+
+   
+
+
+    context = {
+        'pcm' : round(len(pcm_outstanding)/(len(pcm_closed)/52),1),
+        'pcm_c' :len(pcm_outstanding),
+        'pcn_b' : round(len(pcn_b_outstanding)/(len(pcn_b_closed)/52),1),
+        'pcn_b_c' : len(pcn_b_outstanding),
+        'pcn_c' : round(len(pcn_c_outstanding)/(len(pcn_c_closed)/52),1),
+        'pcn_c_c' : len(pcn_c_outstanding),
+        'ptm_d' : round(len(ptm_d_outstanding)/(len(ptm_d_closed)/52),1),
+        'ptm_d_c' : len(ptm_d_outstanding),
+        'ptm_e' : round(len(ptm_e_outstanding)/(len(ptm_e_closed)/52),1),
+        'ptm_e_c' : len(ptm_e_outstanding),
+        'pmf' : round(len(pmf_outstanding)/(len(pmf_closed)/52),1),
+        'pmf_c' : len(pmf_outstanding),
+        'pmi' : round(len(pmi_outstanding)/(len(pmi_closed)/52),1),
+        'pmi_c' : len(pmi_outstanding),
+        'pms' : round(len(pms_outstanding)/(len(pms_closed)/52),1),
+        'pms_c' : len(pms_outstanding),
+        'pmn' : round(len(pmn_outstanding)/(len(pmn_closed)/52),1),
+        'pmn_c' : len(pmn_outstanding),
+        'pmw' : round(len(pmw_outstanding)/(len(pmw_closed)/52),1),
+        'pmw_c' : len(pmw_outstanding),
+        'pw' : round(len(outstanding)/(len(closed)/52),1),
+        'pw_count' : len(outstanding)
+    }
+
+
+    print("No of completed jobs for the past one year :{}".format(len(closed.index)))
+    return render(request, 'weeks.html',context=context)
+
+# Computes the backlog in weeks for each Unit
+def weeks_units(request, dept):
+    if len(pcn_b_outstanding)==0:
+        return redirect('backlog')
+    unit=dept
+    if unit =='pcm':
+        closed = pd.DataFrame({'closed_count' : pcm_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pcm_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pcm_outstanding)/(len(pcm_closed)/52),1),'outstanding':len(pcm_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit=='ptm_e':
+        closed = pd.DataFrame({'closed_count' : ptm_e_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : ptm_e_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(ptm_e_outstanding)/(len(ptm_e_closed)/52),1),'outstanding':len(ptm_e_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit =='ptm_d':
+        closed = pd.DataFrame({'closed_count' : ptm_d_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : ptm_d_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = [] 
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(ptm_d_outstanding)/(len(ptm_d_closed)/52),1),'outstanding':len(ptm_d_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit =='pcn_b':
+        closed = pd.DataFrame({'closed_count' : pcn_b_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pcn_b_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pcn_b_outstanding)/(len(pcn_b_closed)/52),1),'outstanding':len(pcn_b_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit=='pcn_c':
+        closed = pd.DataFrame({'closed_count' : pcn_c_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pcn_c_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pcn_c_outstanding)/(len(pcn_c_closed)/52),1),'outstanding':len(pcn_c_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+        
+    elif unit =='pmf':
+        closed = pd.DataFrame({'closed_count' : pmf_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pmf_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pmf_outstanding)/(len(pmf_closed)/52),1),'outstanding':len(pmf_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit == 'pmi':
+        closed = pd.DataFrame({'closed_count' : pmi_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pmi_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pmi_outstanding)/(len(pmi_closed)/52),1),'outstanding':len(pmi_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit =='pms':
+        closed = pd.DataFrame({'closed_count' : pms_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pms_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pms_outstanding)/(len(pms_closed)/52),1),'outstanding':len(pms_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit =='pmn':
+        closed = pd.DataFrame({'closed_count' : pmn_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pmn_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pmn_outstanding)/(len(pmn_closed)/52),1),'outstanding':len(pmn_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    elif unit =='pmw':
+        closed = pd.DataFrame({'closed_count' : pmw_closed.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        outstanding = pd.DataFrame({'outstanding_count' : pmw_outstanding.groupby( [ "jobtas__ja_orgn_id__orgn_code"] ).size()}).reset_index()
+        data3=pd.merge(closed,outstanding,on='jobtas__ja_orgn_id__orgn_code')
+        data3['backlog']=round(data3['outstanding_count'].astype('float64')/(data3['closed_count'].astype('float64')/52))
+        print(data3.head())
+        json_records = data3.to_json(orient ='records')
+        data = []
+        data = json.loads(json_records)
+        context = {'data': data,'backlog':round(len(pmw_outstanding)/(len(pmw_closed)/52),1),'outstanding':len(pmw_outstanding),'unit':unit}
+        return render(request, 'weeks_unit.html', context)
+    else:
+        return HttpResponse('<h1> Please Select a valid department </h1>')
+    #print(ptm_e_data.query)
+
+def live_report(request):
+    today = datetime.datetime.today() - datetime.timedelta(days=30)
+    generated_live=pd.DataFrame.from_records(list(Jobhdr.objects.filter(
+        ~Q(job_status__in=["CM", "RM",""]) &
+        Q(femast__vet_flag__in=["Y", "M"]) &
+        Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_UTIL','INST_UTIL','MECH_UTIL','SYQFG_UTIL','ELEC_SL','INST_SL','MECH_SL','SYQFG_SL','ELEC_LHU','INST_LHU','MECH_LHU','SYQFG_LHU','ELEC_T123','INST_T123','MECH_T123','SYQFG_T123',
+        'ELEC_T456','INST_T456','MECH_T456','SYQFG_T456','CIV_INSUL','CIV_PAINT','CIV_INFSTR','HVAC_IA','MSC_LIFT&R','MSC_LIGHT','MSC_SCAFF','WK_ACCESS','PMN_MECH','PMN_INST','PMN_ELEC',
+        'FABWKSHOP','ELECTSHOP','HDWKSHOP','INSTWKSHOP','ELECSMART','MECHWKSHOP','MC_WKSHOP','MACHINSHOP','OVHDCRANE','INST_SUPP'
+        ]) &
+        Q(rqt_date__range__gte=(today)
+    )).values()))
+
+    closed_live = pd.DataFrame.from_records(list(Jobhdr.objects.filter(
+    Q(job_status__in=['C', 'HF','EC']) &
+    Q(jobtas__task_status__in=['C']) & 
+    Q(jobtas__ja_orgn_id__orgn_code__in=['ELEC_UTIL','INST_UTIL','MECH_UTIL','SYQFG_UTIL','ELEC_SL','INST_SL','MECH_SL','SYQFG_SL','ELEC_LHU','INST_LHU','MECH_LHU','SYQFG_LHU','ELEC_T123','INST_T123','MECH_T123','SYQFG_T123',
+    'ELEC_T456','INST_T456','MECH_T456','SYQFG_T456','CIV_INSUL','CIV_PAINT','CIV_INFSTR','HVAC_IA','MSC_LIFT&R','MSC_LIGHT','MSC_SCAFF','WK_ACCESS','PMN_MECH','PMN_INST','PMN_ELEC',
+    'FABWKSHOP','ELECTSHOP','HDWKSHOP','INSTWKSHOP','ELECSMART','MECHWKSHOP','MC_WKSHOP','MACHINSHOP','OVHDCRANE','INST_SUPP'
+    ]) &
+    Q(next_step__in=["JO"]) &
+    Q(jobtas__actual_end_date__gte=(today)) &
+    ~Q(work_type__in=['OS', 'SD','MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values()))
+    return render(request, 'index.html', {'qs': })

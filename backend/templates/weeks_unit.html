@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png">
     <link rel="icon" type="" href="/static/img/favicon.ico">
     <title>
-        CM Backlog In Manhrs
+        {{unit|upper}} Backlog In Weeks
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -44,11 +44,6 @@
         .default-color3 {
             background-color: #d5951d!important;
         }
-        
-        .more-link:hover {
-            color: white!important;
-            text-decoration: underline!important;
-        }
     </style>
 </head>
 
@@ -72,7 +67,7 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center ">
                             <i class="material-icons opacity-10 ">view_week</i>
                         </div>
-                        <span class="nav-link-text ms-1 ">Backlog In Weeks</span>
+                        <span class="nav-link-text ms-1 ">CM Backlog In Weeks</span>
                     </a>
                 </li>
                 <li class="nav-item ">
@@ -113,255 +108,49 @@
                 <div class="col-xl-6 col-sm-6 mb-xl-0 mb-4 ">
                     <div class="card mb-3 ">
                         <div class="card-header p-0 pt-0 ">
-                            <!-- <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute ">
-                                <div class="stylez2 ">
-                                    <h6>PLANT WIDE</h6>
-                                </div>
-                            </div> -->
+                          
                             <div class=" text-white active default-color2 ">
                                 <div class="card-footer text-center ">
-                                    <h5 class="mb-0 d font-weight-bolder text-white ">PLANT WIDE</h5>
-                                    <p class="mb-0 text-sm font-weight-bolder smaller text-color ">Backlog in Man Hours</p>
+                                    <h2 class="mb-0 font-weight-bolder text-white ">{{unit|upper}}</h2>
                                 </div>
                             </div>
                             <div class="text-center pt-3 ">
-                                <h1 class="mb-0 ">{{pw}}</h1>
+
+                                <h1 class="mb-0 ">{{backlog}}</h1>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding Jobs: <span class="text-success text-sm font-weight-bolder biger ">{{pw_count}}</span></p>
+                            <p class="mb-0 text-center ">Outstanding Jobs: <span class="text-color text-sm font-weight-bolder biger text-center ">{{outstanding}}</span></p>
                         </div>
-                        <!-- <br>
-                        <a class="nav-link text-white active bg-gradient-dark " href="{% url 'cmunit' dept='pcm' %} ">
-                            <div class="card-footer p-2 text-center ">
-                                <p class="mb-0 text-info text-sm font-weight-bolder biger ">More...</p>
-                            </div>
-                        </a> -->
+                       
                     </div>
                 </div>
             </div>
             <div class="row ">
+                {% if data%} {% for d in data %}
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
                     <div class="card default-color2 ">
                         <div class="card-header p-0 pt-0 ">
                           
                             <div class=" text-white active default-color2 ">
                                 <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PCM</h3>
+                                    <p class="mb-0 text-sm font-weight-bolder biger ">{{d.jobtas__ja_orgn_id__orgn_code}}</p>
                                 </div>
                             </div>
                             <div class="text-end pt-2 text-center text-success default-color2 ">
 
-                                <h3 class="mb-0 text-center text-success ">{{pcm}}</h3>
+                                <h3 class="mb-0 text-center text-success ">{{d.backlog}}</h3>
                             </div>
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcm_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pcm' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{d.outstanding_count}}</span></p>
                         </div>
-                    
+                       
                     </div>
                 </div>
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PCN-B</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pcn_b}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_b_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pcn_b' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PCN-C</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pcn_c}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_c_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pcn_c' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PTM-D</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{ptm_d}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_d_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='ptm_d' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PTM-E</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{ptm_e}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_e_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='ptm_e' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-              
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PMF</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pmf}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmf_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pmf' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PMI</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pmi}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmi_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pmi' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PMS</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pms}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pms_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pms' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PMN</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pmn}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmn_c}}</span> <span class=" text-color "><br> <a href="{% url 'cmunit' dept='pmn' %} " class=" text-color more-link "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 ">
-                    <div class="card default-color2 ">
-                        <div class="card-header p-0 pt-0 ">
-                          
-                            <div class=" text-white active default-color2 ">
-                                <div class="card-footer text-center ">
-                                    <h3 class="mb-0 d font-weight-bolder text-white ">PMW</h3>
-                                </div>
-                            </div>
-                            <div class="text-end pt-2 text-center text-success default-color2 ">
-
-                                <h3 class="mb-0 text-center text-success ">{{pmw}}</h3>
-                            </div>
-                        </div>
-                        <hr class="dark horizontal my-0 ">
-                        <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmw_c}}</span> <span class=" text-color text-sm "><br> <a href="{% url 'cmunit' dept='pmw' %} " class=" text-color more-link
-        text-sm "> View More</a></span></p>
-                        </div>
-                    
-                    </div>
-                </div>
+                {%endfor%} {%endif%}
             </div>
             <div class="row mt-4 ">
 

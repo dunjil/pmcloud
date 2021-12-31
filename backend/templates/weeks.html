@@ -8,9 +8,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <link rel="icon" type="" href="/static/img/favicon.ico">
     <title>
-        CM Backlog In Manhrs
+        Backlog In Weeks
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -68,7 +68,7 @@
                     </a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link text-white active default-color " href="{% url 'backlog' %} ">
+                    <a class="nav-link text-white active default-color " href="{% url 'weeks' %} ">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center ">
                             <i class="material-icons opacity-10 ">view_week</i>
                         </div>
@@ -120,7 +120,8 @@
                             </div> -->
                             <div class=" text-white active default-color2 ">
                                 <div class="card-footer text-center ">
-                                    <p class="mb-0 text-sm font-weight-bolder biger ">PLANT WIDE</p>
+                                    <h5 class="mb-0 d font-weight-bolder text-white ">PLANT WIDE</h5>
+                                    <p class="mb-0 text-sm font-weight-bolder smaller text-color ">Backlog in Weeks</p>
                                 </div>
                             </div>
                             <div class="text-center pt-3 ">
@@ -132,7 +133,7 @@
                             <p class="mb-0 ">Outstanding Jobs: <span class="text-success text-sm font-weight-bolder biger ">{{pw_count}}</span></p>
                         </div>
                         <!-- <br>
-                        <a class="nav-link text-white active bg-gradient-dark " href="{% url 'deptbacklog' dept='pcm' %} ">
+                        <a class="nav-link text-white active bg-gradient-dark " href="{% url 'weeksunit' dept='pcm' %} ">
                             <div class="card-footer p-2 text-center ">
                                 <p class="mb-0 text-info text-sm font-weight-bolder biger ">More...</p>
                             </div>
@@ -157,7 +158,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcm_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pcm' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcm_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pcm' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -178,7 +179,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_b_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pcn_b' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_b_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pcn_b' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -200,7 +201,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_c_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pcn_c' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pcn_c_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pcn_c' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -222,7 +223,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_d_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='ptm_d' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_d_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='ptm_d' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -244,7 +245,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_e_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='ptm_e' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{ptm_e_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='ptm_e' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -268,7 +269,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmf_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pmf' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmf_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pmf' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -290,7 +291,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmi_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pmi' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmi_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pmi' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -312,7 +313,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pms_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pms' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pms_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pms' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -334,7 +335,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmn_c}}</span> <span class=" text-color "><br> <a href="{% url 'deptbacklog' dept='pmn' %} " class=" text-color more-link "> View More</a></span></p>
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmn_c}}</span> <span class=" text-color "><br> <a href="{% url 'weeksunit' dept='pmn' %} " class=" text-color more-link "> View More</a></span></p>
                         </div>
                     
                     </div>
@@ -355,7 +356,7 @@
                         </div>
                         <hr class="dark horizontal my-0 ">
                         <div class="card-footer p-3 text-center ">
-                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmw_c}}</span> <span class=" text-color text-sm "><br> <a href="{% url 'deptbacklog' dept='pmw' %} " class=" text-color more-link
+                            <p class="mb-0 ">Outstanding jobs: <span class="text-color text-sm font-weight-bolder biger ">{{pmw_c}}</span> <span class=" text-color text-sm "><br> <a href="{% url 'weeksunit' dept='pmw' %} " class=" text-color more-link
         text-sm "> View More</a></span></p>
                         </div>
                     
