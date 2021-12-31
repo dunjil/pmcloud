@@ -181,7 +181,7 @@ def backlog(request):
     ~Q(next_step__in=["RM","JV"]) &
     Q(target_end_date__gte=(datetime.datetime(2010, 1, 1, 0, 0, 1))) &
     ~Q(rqtr__in=['PACER']) &
-    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values()))
+    ~Q(work_type__in=['OS', 'SD', 'SF', 'MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values('jobtas__ja_orgn_id__orgn_code','jobtas__est_lab_amt','jobtas__est_misc_amt')))
     data = outstanding
 
      # Outstanding
@@ -864,4 +864,4 @@ def live_report(request):
     Q(next_step__in=["JO"]) &
     Q(jobtas__actual_end_date__gte=(today)) &
     ~Q(work_type__in=['OS', 'SD','MM'])).select_related('jobtas__ja_orgn_id__orgn_code').values()))
-    return render(request, 'index.html', {'qs': })
+    return HttpResponse('<h1> Please Select a valid department </h1>')
